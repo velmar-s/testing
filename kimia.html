@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Tebak Golongan Unsur</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Inter',sans-serif;
+background:linear-gradient(135deg,#667eea,#764ba2);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.container{
+max-width:500px;
+width:100%;
+background:white;
+border-radius:20px;
+padding:30px;
+box-shadow:0 20px 40px rgba(0,0,0,.1);
+}
+
+.header{text-align:center;margin-bottom:25px;}
+.header h1{color:#5a67d8;}
+
+.stats{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.stat{
+flex:1;
+background:#667eea;
+color:white;
+padding:10px;
+border-radius:12px;
+text-align:center;
+}
+
+.element{
+background:#f8f9ff;
+padding:30px;
+border-radius:15px;
+text-align:center;
+margin-bottom:20px;
+}
+
+.symbol{
+font-size:60px;
+font-weight:bold;
+color:#5a67d8;
+}
+
+input{
+width:100%;
+padding:15px;
+font-size:18px;
+border-radius:12px;
+border:2px solid #ddd;
+margin-bottom:15px;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#667eea;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.feedback{
+text-align:center;
+font-weight:bold;
+margin-bottom:10px;
+height:24px;
+}
+
+.hidden{display:none;}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>Game Tebak Golongan</h1>
+<p>Tebak golongan dari simbol unsur</p>
+</div>
+
+<div id="setup">
+
+<input type="number" id="timerInput" value="60" min="10">
+<button id="startBtn">Mulai Game</button>
+
+</div>
+
+<div id="game" class="hidden">
+
+<div class="stats">
+<div class="stat">Skor<br><span id="score">0</span></div>
+<div class="stat">Waktu<br><span id="timer">60</span></div>
+</div>
+
+<div class="element">
+<div class="symbol" id="symbol">-</div>
+<p>Golongan berapa?</p>
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<input
+type="number"
+inputmode="numeric"
+pattern="[0-9]*"
+id="answer"
+placeholder="Masukkan angka golongan">
+
+</div>
+
+</div>
+
+<script>
+
+// ================= DATA =================
+
+const elements={
+1:['H','Li','Na','K','Rb','Cs','Fr'],
+2:['Be','Mg','Ca','Sr','Ba','Ra'],
+13:['B','Al','Ga','In','Tl','Nh'],
+14:['C','Si','Ge','Sn','Pb','Fl'],
+15:['N','P','As','Sb','Bi','Mc'],
+16:['O','S','Se','Te','Po','Lv'],
+17:['F','Cl','Br','I','At','Ts'],
+18:['He','Ne','Ar','Kr','Xe','Rn','Og']
+};
+
+// flatten
+let all=[];
+Object.keys(elements).forEach(g=>{
+elements[g].forEach(sym=>{
+all.push({symbol:sym,group:g});
+});
+});
+
+// ================= STATE =================
+
+let queue=[];
+let current=null;
+let score=0;
+let total=0;
+let timerInt=null;
+let timeLeft=60;
+
+// ================= DOM =================
+
+const setup=document.getElementById('setup');
+const game=document.getElementById('game');
+
+const symbolEl=document.getElementById('symbol');
+const scoreEl=document.getElementById('score');
+const timerEl=document.getElementById('timer');
+const feedback=document.getElementById('feedback');
+
+const answer=document.getElementById('answer');
+
+document.getElementById('startBtn').onclick=startGame;
+
+answer.addEventListener('keydown',e=>{
+if(e.key==='Enter') checkAnswer();
+});
+
+// ================= LOGIC =================
+
+function shuffle(arr){
+for(let i=arr.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[arr[i],arr[j]]=[arr[j],arr[i]];
+}
+return arr;
+}
+
+function refillQueue(){
+queue=shuffle([...all]);
+}
+
+function nextElement(){
+
+if(queue.length===0){
+refillQueue(); // semua sudah keluar → acak ulang
+}
+
+current=queue.pop();
+
+symbolEl.textContent=current.symbol;
+
+}
+
+function startGame(){
+
+score=0;
+total=0;
+
+timeLeft=parseInt(document.getElementById('timerInput').value)||60;
+
+setup.classList.add('hidden');
+game.classList.remove('hidden');
+
+refillQueue();
+nextElement();
+
+updateUI();
+
+answer.focus();
+
+timerInt=setInterval(()=>{
+
+timeLeft--;
+timerEl.textContent=timeLeft;
+
+if(timeLeft<=0){
+clearInterval(timerInt);
+alert('Game selesai! Skor: '+score);
+location.reload();
+}
+
+},1000);
+
+}
+
+function checkAnswer(){
+
+const val=answer.value.trim();
+
+if(!val) return;
+
+total++;
+
+if(val===current.group){
+
+score++;
+feedback.textContent='BENAR!';
+feedback.style.color='green';
+
+}else{
+
+feedback.textContent='SALAH!';
+feedback.style.color='red';
+
+}
+
+answer.value='';
+scoreEl.textContent=score;
+
+setTimeout(()=>{
+feedback.textContent='';
+nextElement();
+},600);
+
+}
+
+function updateUI(){
+
+scoreEl.textContent=score;
+timerEl.textContent=timeLeft;
+
+}
+
+</script>
+
+</body>
+</html>
