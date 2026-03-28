@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Anggaran MBG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a1628;
+            --bg-secondary: #0f2035;
+            --bg-card: #132640;
+            --accent: #00d4ff;
+            --accent-dim: #0891b2;
+            --text-primary: #e8f4fc;
+            --text-secondary: #8ba4bc;
+            --border: #1e3a5f;
+            --flag-red: #e00025;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .font-serif {
+            font-family: 'Source Serif 4', serif;
+        }
+
+        /* Background pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.02) 0%, transparent 50%),
+                linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Input styling */
+        .input-wrapper {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1), 0 0 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .money-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 100%;
+            padding: 1.25rem 1rem 1.25rem 3.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .money-input::placeholder {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .currency-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Button */
+        .calc-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+            color: var(--bg-primary);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .calc-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Cards */
+        .data-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .data-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Result display */
+        .result-number {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        /* Time breakdown */
+        .time-unit {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .time-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.25rem;
+        }
+
+        /* Flag */
+        .flag-container {
+            display: flex;
+            height: 24px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .flag-red {
+            width: 50%;
+            background: var(--flag-red);
+        }
+
+        .flag-white {
+            width: 50%;
+            background: #ffffff;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .animate-delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .animate-delay-5 { animation-delay: 0.5s; opacity: 0; }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-dim);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8 md:py-16">
+        <!-- Header -->
+        <header class="mb-12 animate-fade-in">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="flag-container">
+                        <div class="flag-red"></div>
+                        <div class="flag-white"></div>
+                    </div>
+                    <span class="text-sm font-medium text-[var(--text-secondary)]">Kalkulator Anggaran</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="live-indicator"></div>
+                    <span class="text-xs text-[var(--text-secondary)]">DATA REAL-TIME</span>
+                </div>
+            </div>
+            
+            <h1 class="font-serif text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                Program MBG:<br>
+                <span class="text-[var(--accent)]">Makan Bergizi Gratis</span>
+            </h1>
+            <p class="text-[var(--text-secondary)] text-lg max-w-2xl">
+                Hitung dan pahami bagaimana anggaran negara dialokasikan untuk program makan bergizi gratis nasional.
+            </p>
+        </header>
+
+        <!-- Calculator Section -->
+        <section class="mb-12 animate-fade-in animate-delay-1">
+            <div class="data-card">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Kalkulator Investigasi</span>
+                </div>
+                
+                <h2 class="font-serif text-xl md:text-2xl font-semibold mb-6">
+                    Masukkan Jumlah Nominal, dan Lihat Berapa Lama Uang Itu Bisa Menunjang MBG
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="input-wrapper">
+                        <span class="currency-prefix">Rp</span>
+                        <input 
+                            type="number" 
+                            id="moneyInput" 
+                            class="money-input" 
+                            placeholder="Masukkan nominal..."
+                            autocomplete="off"
+                        >
+                    </div>
+                    
+                    <button class="calc-btn w-full md:w-auto" onclick="calculate()">
+                        Hitung Durasi MBG
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Result Section -->
+        <section id="resultSection" class="mb-12 hidden">
+            <div class="data-card">
+                <div class="flex items-center gap-2 mb-6">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Hasil Perhitungan</span>
+                </div>
+                
+                <div class="text-center mb-8">
+                    <p class="text-[var(--text-secondary)] mb-2">Nominal Anda dapat menunjang MBG selama</p>
+                    <div class="result-number" id="daysResult">0</div>
+                    <p class="text-xl text-[var(--text-secondary)]">hari</p>
+                </div>
+                
+                <div class="divider mb-6"></div>
+                
+                <p class="text-sm text-[var(--text-secondary)] text-center mb-4 uppercase tracking-wider">Rincian Waktu</p>
+                
+                <div class="grid grid-cols-4 gap-2 md:gap-4" id="timeBreakdown">
+                    <div class="time-unit">
+                        <div class="time-value" id="yearsValue">0</div>
+                        <div class="time-label">Tahun</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="monthsValue">0</div>
+                        <div class="time-label">Bulan</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="daysValue">0</div>
+                        <div class="time-label">Hari</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="hoursValue">0</div>
+                        <div class="time-label">Jam</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 md:gap-4 mt-4">
+                    <div class="time-unit">
+                        <div class="time-value" id="minutesValue">0</div>
+                        <div class="time-label">Menit</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="secondsValue">0</div>
+                        <div class="time-label">Detik</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Section -->
+        <section class="animate-fade-in animate-delay-2">
+            <div class="flex items-center gap-2 mb-6">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                    <path d="M3 3v18h18"></path>
+                    <path d="m19 9-5 5-4-4-3 3"></path>
+                </svg>
+                <span class="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Data Anggaran MBG</span>
+            </div>
+            
+            <div class="grid gap-4 md:grid-cols-2">
+                <div class="data-card animate-fade-in animate-delay-3">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-[var(--text-secondary)] mb-1">Total Anggaran Nasional</p>
+                            <p class="text-2xl font-bold">~Rp1,2 Triliun</p>
+                            <p class="text-sm text-[var(--accent)]">per hari</p>
+                        </div>
+                        <div class="p-2 bg-[rgba(0,212,255,0.1)] rounded-lg">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-card animate-fade-in animate-delay-4">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-[var(--text-secondary)] mb-1">Alokasi Bahan Pangan</p>
+                            <p class="text-2xl font-bold">Rp800-900 M</p>
+                            <p class="text-sm text-[var(--accent)]">per hari</p>
+                        </div>
+                        <div class="p-2 bg-[rgba(0,212,255,0.1)] rounded-lg">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                                <path d="M3 6h18"></path>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-card animate-fade-in animate-delay-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-[var(--text-secondary)] mb-1">Biaya per Dapur (SPPG)</p>
+                            <p class="text-2xl font-bold">~Rp500 Juta</p>
+                            <p class="text-sm text-[var(--accent)]">per hari, termasuk operasional</p>
+                        </div>
+                        <div class="p-2 bg-[rgba(0,212,255,0.1)] rounded-lg">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                                <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
+                                <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"></path>
+                                <path d="M12 3v6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-card animate-fade-in animate-delay-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-[var(--text-secondary)] mb-1">Insentif Fasilitas Dapur</p>
+                            <p class="text-2xl font-bold">Rp6 Juta</p>
+                            <p class="text-sm text-[var(--accent)]">per hari per dapur</p>
+                        </div>
+                        <div class="p-2 bg-[rgba(0,212,255,0.1)] rounded-lg">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                                <path d="M7 7h.01M7 12h.01M7 17h.01M12 7h5M12 12h5M12 17h5"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-card mt-4 animate-fade-in animate-delay-5">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-sm text-[var(--text-secondary)] mb-1">Biaya per Porsi Makanan</p>
+                        <p class="text-2xl font-bold">~Rp15.000</p>
+                        <p class="text-sm text-[var(--text-secondary)]">Rincian: Rp8-10 ribu bahan + ~Rp5 ribu operasional</p>
+                    </div>
+                    <div class="p-2 bg-[rgba(0,212,255,0.1)] rounded-lg">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8Z"></path>
+                            <path d="M6 1v3"></path>
+                            <path d="M10 1v3"></path>
+                            <path d="M14 1v3"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-[var(--border)]">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="flag-container">
+                        <div class="flag-red"></div>
+                        <div class="flag-white"></div>
+                    </div>
+                    <span class="text-sm text-[var(--text-secondary)]">Kalkulator Anggaran MBG Indonesia</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)]">
+                    Data berdasarkan informasi anggaran publik Kementerian
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Constants
+        const COST_PER_DAY = 1200000000000; // Rp1.2 trillion per day
+        const SECONDS_PER_DAY = 86400;
+        const SECONDS_PER_HOUR = 3600;
+        const SECONDS_PER_MINUTE = 60;
+        const DAYS_PER_YEAR = 365;
+        const DAYS_PER_MONTH = 30;
+
+        // DOM Elements - initialized after declaration
+        const moneyInput = document.getElementById('moneyInput');
+        const resultSection = document.getElementById('resultSection');
+        const daysResult = document.getElementById('daysResult');
+        const yearsValue = document.getElementById('yearsValue');
+        const monthsValue = document.getElementById('monthsValue');
+        const daysValue = document.getElementById('daysValue');
+        const hoursValue = document.getElementById('hoursValue');
+        const minutesValue = document.getElementById('minutesValue');
+        const secondsValue = document.getElementById('secondsValue');
+
+        // Format number to Indonesian format
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Parse Indonesian formatted number
+        function parseInput(str) {
+            // Remove all non-digit characters
+            const cleaned = str.replace(/[^\d]/g, '');
+            return parseInt(cleaned, 10) || 0;
+        }
+
+        // Format input as user types
+        moneyInput.addEventListener('input', function(e) {
+            const cursorPos = e.target.selectionStart;
+            const originalLength = e.target.value.length;
+            
+            // Parse and format
+            const value = parseInput(e.target.value);
+            if (value > 0) {
+                e.target.value = formatNumber(value);
+            } else {
+                e.target.value = '';
+            }
+            
+            // Adjust cursor position
+            const newLength = e.target.value.length;
+            const diff = newLength - originalLength;
+            e.target.setSelectionRange(cursorPos + diff, cursorPos + diff);
+        });
+
+        // Calculate duration
+        function calculate() {
+            const amount = parseInput(moneyInput.value);
+            
+            if (amount <= 0) {
+                alert('Mohon masukkan nominal yang valid.');
+                return;
+            }
+
+            // Calculate total seconds
+            const totalSeconds = (amount / COST_PER_DAY) * SECONDS_PER_DAY;
+
+            // Break down time
+            const years = Math.floor(totalSeconds / (SECONDS_PER_DAY * DAYS_PER_YEAR));
+            const remainingAfterYears = totalSeconds % (SECONDS_PER_DAY * DAYS_PER_YEAR);
+            
+            const months = Math.floor(remainingAfterYears / (SECONDS_PER_DAY * DAYS_PER_MONTH));
+            const remainingAfterMonths = remainingAfterYears % (SECONDS_PER_DAY * DAYS_PER_MONTH);
+            
+            const days = Math.floor(remainingAfterMonths / SECONDS_PER_DAY);
+            const remainingAfterDays = remainingAfterMonths % SECONDS_PER_DAY;
+            
+            const hours = Math.floor(remainingAfterDays / SECONDS_PER_HOUR);
+            const remainingAfterHours = remainingAfterDays % SECONDS_PER_HOUR;
+            
+            const minutes = Math.floor(remainingAfterHours / SECONDS_PER_MINUTE);
+            const seconds = Math.floor(remainingAfterHours % SECONDS_PER_MINUTE);
+
+            // Calculate total days for display
+            const totalDays = amount / COST_PER_DAY;
+
+            // Show result section
+            resultSection.classList.remove('hidden');
+            resultSection.classList.add('animate-fade-in');
+
+            // Animate numbers
+            animateValue(daysResult, 0, totalDays, 1000, true);
+            animateValue(yearsValue, 0, years, 800);
+            animateValue(monthsValue, 0, months, 800);
+            animateValue(daysValue, 0, days, 800);
+            animateValue(hoursValue, 0, hours, 800);
+            animateValue(minutesValue, 0, minutes, 800);
+            animateValue(secondsValue, 0, seconds, 800);
+
+            // Scroll to result
+            setTimeout(() => {
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Animate number value
+        function animateValue(element, start, end, duration, isDecimal = false) {
+            const startTime = performance.now();
+            const diff = end - start;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = start + (diff * easeOut);
+                
+                if (isDecimal) {
+                    if (current >= 1) {
+                        element.textContent = formatNumber(Math.round(current));
+                    } else if (current > 0) {
+                        // Show decimal for small values
+                        element.textContent = current.toFixed(6);
+                    } else {
+                        element.textContent = '0';
+                    }
+                } else {
+                    element.textContent = formatNumber(Math.round(current));
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Enter key support
+        moneyInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+
+        // Focus input on load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                moneyInput.focus();
+            }, 600);
+        });
+    </script>
+</body>
+</html>
