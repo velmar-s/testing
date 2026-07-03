@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Card Huruf Hijaiyah</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f2f5f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card{
+    background:white;
+    width:320px;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+.arab{
+    font-size:90px;
+    margin:25px 0;
+}
+
+.answer{
+    font-size:28px;
+    color:#2e7d32;
+    min-height:40px;
+    font-weight:bold;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.show{
+    background:#2196f3;
+    color:white;
+}
+
+.next{
+    background:#4caf50;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Tebak Huruf Hijaiyah</h2>
+
+    <div id="huruf" class="arab"></div>
+
+    <div id="jawaban" class="answer">???</div>
+
+    <button class="show" onclick="lihatJawaban()">
+        Lihat Jawaban
+    </button>
+
+    <button class="next" onclick="kartuBerikut()">
+        Berikutnya
+    </button>
+</div>
+
+<script>
+
+const data = [
+{arab:"ا", latin:"Alif"},
+{arab:"ب", latin:"Ba"},
+{arab:"ت", latin:"Ta"},
+{arab:"ث", latin:"Tsa"},
+{arab:"ج", latin:"Jim"},
+{arab:"ح", latin:"Ha"},
+{arab:"خ", latin:"Kha"},
+{arab:"د", latin:"Dal"},
+{arab:"ذ", latin:"Dzal"},
+{arab:"ر", latin:"Ra"},
+{arab:"ز", latin:"Za"},
+{arab:"س", latin:"Sin"},
+{arab:"ش", latin:"Syin"},
+{arab:"ص", latin:"Shad"},
+{arab:"ض", latin:"Dhad"},
+{arab:"ط", latin:"Tha"},
+{arab:"ظ", latin:"Zha"},
+{arab:"ع", latin:"'Ain"},
+{arab:"غ", latin:"Ghain"},
+{arab:"ف", latin:"Fa"},
+{arab:"ق", latin:"Qaf"},
+{arab:"ك", latin:"Kaf"},
+{arab:"ل", latin:"Lam"},
+{arab:"م", latin:"Mim"},
+{arab:"ن", latin:"Nun"},
+{arab:"ه", latin:"Ha"},
+{arab:"و", latin:"Wau"},
+{arab:"ي", latin:"Ya"}
+];
+
+let urutan=[];
+let index=0;
+
+function acak(){
+    urutan=[...data.keys()];
+
+    for(let i=urutan.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [urutan[i],urutan[j]]=[urutan[j],urutan[i]];
+    }
+
+    index=0;
+}
+
+function tampil(){
+    if(index>=urutan.length){
+        acak();
+    }
+
+    const kartu=data[urutan[index]];
+
+    document.getElementById("huruf").innerHTML=kartu.arab;
+    document.getElementById("jawaban").innerHTML="???";
+}
+
+function lihatJawaban(){
+    const kartu=data[urutan[index]];
+    document.getElementById("jawaban").innerHTML=kartu.latin;
+}
+
+function kartuBerikut(){
+    index++;
+    tampil();
+}
+
+acak();
+tampil();
+
+</script>
+
+</body>
+</html>
