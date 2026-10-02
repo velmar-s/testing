@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WebLearn — Dasar HTML & CSS</title>
+
+    <style>
+        /* =========================
+           RESET & DASAR
+        ========================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f6f8fb;
+            color: #202124;
+            line-height: 1.7;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 64px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 800;
+            color: #2563eb;
+        }
+
+        .logo span {
+            color: #111827;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+        .layout {
+            display: flex;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+        aside {
+            width: 260px;
+            height: calc(100vh - 64px);
+            position: sticky;
+            top: 64px;
+            overflow-y: auto;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+
+        .menu-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #9ca3af;
+            text-transform: uppercase;
+            margin: 16px 12px 8px;
+            letter-spacing: 0.5px;
+        }
+
+        aside a {
+            display: block;
+            padding: 9px 12px;
+            border-radius: 7px;
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 2px;
+        }
+
+        aside a:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+        main {
+            flex: 1;
+            min-width: 0;
+            padding: 48px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 48px;
+            border-radius: 18px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            max-width: 700px;
+            opacity: 0.92;
+            font-size: 17px;
+        }
+
+        .hero-buttons {
+            margin-top: 24px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            background: white;
+            color: #2563eb;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .button.secondary {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        section {
+            margin-bottom: 55px;
+            scroll-margin-top: 90px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        h3 {
+            margin: 25px 0 10px;
+            color: #1f2937;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        /* =========================
+           INFO CARDS
+        ========================= */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .card-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        /* =========================
+           CODE
+        ========================= */
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 15px 0 22px;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        .inline-code {
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 90%;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin: 18px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        /* =========================
+           NOTE
+        ========================= */
+        .note {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px 18px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        .warning {
+            background: #fff7ed;
+            border-left: 4px solid #f97316;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+        .mobile-menu {
+            display: none;
+        }
+
+        @media (max-width: 850px) {
+            header {
+                height: 58px;
+                padding: 0 16px;
+            }
+
+            .mobile-menu {
+                display: block;
+                margin-left: auto;
+                font-size: 22px;
+                cursor: pointer;
+            }
+
+            aside {
+                display: none;
+                position: fixed;
+                left: 0;
+                top: 58px;
+                width: 280px;
+                height: calc(100vh - 58px);
+                z-index: 200;
+                box-shadow: 5px 0 20px rgba(0,0,0,0.1);
+            }
+
+            aside.show {
+                display: block;
+            }
+
+            main {
+                padding: 24px 16px;
+            }
+
+            .hero {
+                padding: 30px 22px;
+                border-radius: 14px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (min-width: 851px) {
+            .mobile-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Web<span>Learn</span></div>
+
+    <div class="mobile-menu" onclick="toggleMenu()">
+        ☰
+    </div>
+</header>
+
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+
+        <div class="menu-title">Pengenalan</div>
+        <a href="#pengertian">Apa itu HTML?</a>
+        <a href="#struktur">Struktur HTML</a>
+        <a href="#tag">Tag HTML</a>
+        <a href="#atribut">Atribut</a>
+
+        <div class="menu-title">HTML Dasar</div>
+        <a href="#heading">Heading</a>
+        <a href="#text">Teks</a>
+        <a href="#link">Link</a>
+        <a href="#image">Gambar</a>
+        <a href="#list">List</a>
+        <a href="#table">Tabel</a>
+        <a href="#form">Form</a>
+        <a href="#semantic">Semantic HTML</a>
+
+        <div class="menu-title">CSS</div>
+        <a href="#css-intro">Apa itu CSS?</a>
+        <a href="#css-selector">Selector</a>
+        <a href="#css-color">Warna</a>
+        <a href="#css-font">Font & Teks</a>
+        <a href="#css-box">Box Model</a>
+        <a href="#css-display">Display</a>
+        <a href="#css-flex">Flexbox</a>
+        <a href="#css-grid">Grid</a>
+        <a href="#css-responsive">Responsive</a>
+
+        <div class="menu-title">Lanjutan</div>
+        <a href="#gabungan">HTML + CSS</a>
+        <a href="#tips">Tips Belajar</a>
+
+    </aside>
+
+
+    <!-- CONTENT -->
+    <main>
+
+        <!-- HERO -->
+        <div class="hero">
+            <h1>Belajar HTML & CSS</h1>
+
+            <p>
+                Panduan dasar untuk memahami bagaimana website dibuat,
+                mulai dari struktur HTML sampai mempercantik halaman
+                menggunakan CSS.
+            </p>
+
+            <div class="hero-buttons">
+                <a class="button" href="#pengertian">
+                    Mulai Belajar
+                </a>
+
+                <a class="button secondary" href="#gabungan">
+                    Contoh Website
+                </a>
+            </div>
+        </div>
+
+
+        <!-- PENGERTIAN -->
+        <section id="pengertian">
+
+            <h2>1. Apa itu HTML?</h2>
+
+            <p>
+                <b>HTML (HyperText Markup Language)</b> adalah bahasa markup
+                yang digunakan untuk membuat struktur sebuah halaman web.
+            </p>
+
+            <p>
+                HTML menentukan bagian-bagian seperti judul, paragraf,
+                gambar, tombol, link, tabel, dan formulir.
+            </p>
+
+            <div class="cards">
+
+                <div class="card">
+                    <div class="card-icon">🏗️</div>
+                    <h3>HTML</h3>
+                    <p>
+                        Mengatur struktur dan isi halaman.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🎨</div>
+                    <h3>CSS</h3>
+                    <p>
+                        Mengatur tampilan dan desain halaman.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">⚙️</div>
+                    <h3>JavaScript</h3>
+                    <p>
+                        Membuat website menjadi interaktif.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- STRUKTUR -->
+        <section id="struktur">
+
+            <h2>2. Struktur Dasar HTML</h2>
+
+            <p>
+                Hampir setiap dokumen HTML memiliki struktur dasar seperti
+                berikut:
+            </p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Website Saya&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+    &lt;h1&gt;Halo Dunia!&lt;/h1&gt;
+    &lt;p&gt;Ini adalah website pertama saya.&lt;/p&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+            <div class="note">
+                <b>Tips:</b> Biasakan menulis struktur dasar ini setiap kali
+                membuat file HTML baru.
+            </div>
+
+        </section>
+
+
+        <!-- TAG -->
+        <section id="tag">
+
+            <h2>3. Tag HTML</h2>
+
+            <p>
+                HTML menggunakan <b>tag</b> untuk menentukan jenis elemen.
+            </p>
+
+<pre><code>&lt;p&gt;Ini adalah paragraf.&lt;/p&gt;
+
+&lt;h1&gt;Ini adalah judul.&lt;/h1&gt;
+
+&lt;button&gt;Klik Saya&lt;/button&gt;</code></pre>
+
+            <p>
+                Sebagian besar tag memiliki tag pembuka dan penutup.
+            </p>
+
+            <p>
+                Contoh:
+                <span class="inline-code">&lt;p&gt;...&lt;/p&gt;</span>
+            </p>
+
+        </section>
+
+
+        <!-- ATRIBUT -->
+        <section id="atribut">
+
+            <h2>4. Atribut HTML</h2>
+
+            <p>
+                Atribut memberikan informasi tambahan kepada sebuah elemen.
+            </p>
+
+<pre><code>&lt;a href="https://example.com"&gt;
+    Buka Website
+&lt;/a&gt;</code></pre>
+
+            <p>
+                Pada contoh tersebut, <b>href</b> adalah atribut.
+            </p>
+
+        </section>
+
+
+        <!-- HEADING -->
+        <section id="heading">
+
+            <h2>5. Heading</h2>
+
+            <p>
+                HTML memiliki enam tingkat heading, yaitu
+                <span class="inline-code">&lt;h1&gt;</span>
+                sampai
+                <span class="inline-code">&lt;h6&gt;</span>.
+            </p>
+
+<pre><code>&lt;h1&gt;Judul Utama&lt;/h1&gt;
+&lt;h2&gt;Subjudul&lt;/h2&gt;
+&lt;h3&gt;Sub-subjudul&lt;/h3&gt;</code></pre>
+
+        </section>
+
+
+        <!-- TEXT -->
+        <section id="text">
+
+            <h2>6. Teks</h2>
+
+<pre><code>&lt;p&gt;Paragraf biasa.&lt;/p&gt;
+
+&lt;b&gt;Teks tebal&lt;/b&gt;
+
+&lt;i&gt;Teks miring&lt;/i&gt;
+
+&lt;strong&gt;Penting&lt;/strong&gt;
+
+&lt;br&gt;
+
+&lt;hr&gt;</code></pre>
+
+        </section>
+
+
+        <!-- LINK -->
+        <section id="link">
+
+            <h2>7. Link</h2>
+
+            <p>
+                Link digunakan untuk mengarahkan pengguna ke halaman lain.
+            </p>
+
+<pre><code>&lt;a href="https://google.com"&gt;
+    Google
+&lt;/a&gt;</code></pre>
+
+        </section>
+
+
+        <!-- IMAGE -->
+        <section id="image">
+
+            <h2>8. Gambar</h2>
+
+<pre><code>&lt;img
+    src="gambar.jpg"
+    alt="Gambar pemandangan"
+    width="400"
+&gt;</code></pre>
+
+            <p>
+                Atribut <b>alt</b> digunakan untuk memberikan deskripsi
+                gambar.
+            </p>
+
+        </section>
+
+
+        <!-- LIST -->
+        <section id="list">
+
+            <h2>9. List</h2>
+
+            <h3>Unordered List</h3>
+
+<pre><code>&lt;ul&gt;
+    &lt;li&gt;HTML&lt;/li&gt;
+    &lt;li&gt;CSS&lt;/li&gt;
+    &lt;li&gt;JavaScript&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+
+            <h3>Ordered List</h3>
+
+<pre><code>&lt;ol&gt;
+    &lt;li&gt;Buka editor&lt;/li&gt;
+    &lt;li&gt;Tulis kode&lt;/li&gt;
+    &lt;li&gt;Simpan file&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+
+        </section>
+
+
+        <!-- TABLE -->
+        <section id="table">
+
+            <h2>10. Tabel</h2>
+
+<pre><code>&lt;table&gt;
+
+    &lt;tr&gt;
+        &lt;th&gt;Nama&lt;/th&gt;
+        &lt;th&gt;Kelas&lt;/th&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td&gt;Budi&lt;/td&gt;
+        &lt;td&gt;XI IPA 1&lt;/td&gt;
+    &lt;/tr&gt;
+
+&lt;/table&gt;</code></pre>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <tr>
+                        <th>Tag</th>
+                        <th>Fungsi</th>
+                    </tr>
+
+                    <tr>
+                        <td>&lt;table&gt;</td>
+                        <td>Membuat tabel</td>
+                    </tr>
+
+                    <tr>
+                        <td>&lt;tr&gt;</td>
+                        <td>Membuat baris</td>
+                    </tr>
+
+                    <tr>
+                        <td>&lt;th&gt;</td>
+                        <td>Header tabel</td>
+                    </tr>
+
+                    <tr>
+                        <td>&lt;td&gt;</td>
+                        <td>Data tabel</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- FORM -->
+        <section id="form">
+
+            <h2>11. Form</h2>
+
+            <p>
+                Form digunakan untuk menerima input dari pengguna.
+            </p>
+
+<pre><code>&lt;form&gt;
+
+    &lt;label&gt;Nama:&lt;/label&gt;
+
+    &lt;input
+        type="text"
+        placeholder="Masukkan nama"
+    &gt;
+
+    &lt;button type="submit"&gt;
+        Kirim
+    &lt;/button&gt;
+
+&lt;/form&gt;</code></pre>
+
+        </section>
+
+
+        <!-- SEMANTIC -->
+        <section id="semantic">
+
+            <h2>12. Semantic HTML</h2>
+
+            <p>
+                Semantic HTML menggunakan tag yang menjelaskan fungsi
+                suatu bagian halaman.
+            </p>
+
+<pre><code>&lt;header&gt;&lt;/header&gt;
+
+&lt;nav&gt;&lt;/nav&gt;
+
+&lt;main&gt;&lt;/main&gt;
+
+&lt;section&gt;&lt;/section&gt;
+
+&lt;article&gt;&lt;/article&gt;
+
+&lt;footer&gt;&lt;/footer&gt;</code></pre>
+
+        </section>
+
+
+        <!-- CSS INTRO -->
+        <section id="css-intro">
+
+            <h2>13. Apa itu CSS?</h2>
+
+            <p>
+                <b>CSS (Cascading Style Sheets)</b> digunakan untuk mengatur
+                tampilan halaman HTML.
+            </p>
+
+            <p>
+                Dengan CSS kita dapat mengatur warna, ukuran teks,
+                jarak, posisi, layout, animasi, dan masih banyak lagi.
+            </p>
+
+<pre><code>p {
+    color: blue;
+    font-size: 18px;
+}</code></pre>
+
+        </section>
+
+
+        <!-- SELECTOR -->
+        <section id="css-selector">
+
+            <h2>14. CSS Selector</h2>
+
+            <p>
+                Selector menentukan elemen HTML mana yang akan diberi style.
+            </p>
+
+<pre><code>/* Selector tag */
+
+p {
+    color: blue;
+}
+
+
+/* Selector class */
+
+.judul {
+    color: red;
+}
+
+
+/* Selector ID */
+
+#header {
+    background: black;
+}</code></pre>
+
+        </section>
+
+
+        <!-- COLOR -->
+        <section id="css-color">
+
+            <h2>15. Warna</h2>
+
+<pre><code>body {
+    background-color: #f5f5f5;
+}
+
+h1 {
+    color: #2563eb;
+}
+
+p {
+    color: rgb(50, 50, 50);
+}</code></pre>
+
+            <p>
+                CSS mendukung nama warna, HEX, RGB, RGBA, HSL, dan format
+                lainnya.
+            </p>
+
+        </section>
+
+
+        <!-- FONT -->
+        <section id="css-font">
+
+            <h2>16. Font & Teks</h2>
+
+<pre><code>p {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.6;
+}</code></pre>
+
+        </section>
+
+
+        <!-- BOX MODEL -->
+        <section id="css-box">
+
+            <h2>17. CSS Box Model</h2>
+
+            <p>
+                Setiap elemen HTML dapat dianggap sebagai sebuah kotak.
+            </p>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Content</h3>
+                    <p>Isi elemen.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Padding</h3>
+                    <p>Jarak antara isi dan border.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Margin</h3>
+                    <p>Jarak antara elemen dengan elemen lain.</p>
+                </div>
+
+            </div>
+
+<pre><code>.box {
+    width: 300px;
+    padding: 20px;
+    border: 2px solid black;
+    margin: 20px;
+}</code></pre>
+
+        </section>
+
+
+        <!-- DISPLAY -->
+        <section id="css-display">
+
+            <h2>18. Display</h2>
+
+<pre><code>.box {
+    display: block;
+}
+
+.box {
+    display: inline;
+}
+
+.box {
+    display: inline-block;
+}
+
+.box {
+    display: none;
+}</code></pre>
+
+        </section>
+
+
+        <!-- FLEX -->
+        <section id="css-flex">
+
+            <h2>19. Flexbox</h2>
+
+            <p>
+                Flexbox digunakan untuk mengatur posisi elemen secara fleksibel.
+            </p>
+
+<pre><code>.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}</code></pre>
+
+            <p>
+                Properti penting:
+            </p>
+
+            <ul>
+                <li>display: flex</li>
+                <li>justify-content</li>
+                <li>align-items</li>
+                <li>flex-direction</li>
+                <li>gap</li>
+                <li>flex-wrap</li>
+            </ul>
+
+        </section>
+
+
+        <!-- GRID -->
+        <section id="css-grid">
+
+            <h2>20. CSS Grid</h2>
+
+            <p>
+                Grid cocok digunakan untuk membuat layout berbentuk kolom
+                dan baris.
+            </p>
+
+<pre><code>.container {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+    gap: 20px;
+}</code></pre>
+
+        </section>
+
+
+        <!-- RESPONSIVE -->
+        <section id="css-responsive">
+
+            <h2>21. Responsive Design</h2>
+
+            <p>
+                Responsive design membuat website dapat menyesuaikan
+                tampilannya pada berbagai ukuran layar.
+            </p>
+
+<pre><code>@media (max-width: 600px) {
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+}</code></pre>
+
+            <div class="note">
+                <b>Tips:</b> Selalu gunakan viewport meta tag agar halaman
+                HTML bekerja dengan baik pada perangkat mobile.
+            </div>
+
+        </section>
+
+
+        <!-- GABUNGAN -->
+        <section id="gabungan">
+
+            <h2>22. Contoh HTML + CSS</h2>
+
+            <p>
+                Berikut contoh sederhana website yang menggabungkan HTML
+                dan CSS.
+            </p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+
+&lt;html&gt;
+
+&lt;head&gt;
+
+    &lt;style&gt;
+
+        body {
+            font-family: Arial;
+            background: #f5f5f5;
+            text-align: center;
+        }
+
+        h1 {
+            color: blue;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 400px;
+            border-radius: 12px;
+        }
+
+    &lt;/style&gt;
+
+&lt;/head&gt;
+
+
+&lt;body&gt;
+
+    &lt;div class="card"&gt;
+
+        &lt;h1&gt;Halo Dunia!&lt;/h1&gt;
+
+        &lt;p&gt;
+            Saya sedang belajar membuat website.
+        &lt;/p&gt;
+
+        &lt;button&gt;
+            Klik Saya
+        &lt;/button&gt;
+
+    &lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;</code></pre>
+
+        </section>
+
+
+        <!-- TIPS -->
+        <section id="tips">
+
+            <h2>23. Tips Belajar Web</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>1. Praktik</h3>
+                    <p>
+                        Jangan hanya membaca. Langsung tulis dan coba kode.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>2. Buat Proyek</h3>
+                    <p>
+                        Coba buat portofolio, landing page, atau website sekolah.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>3. Pelajari Bertahap</h3>
+                    <p>
+                        Kuasai HTML dan CSS sebelum masuk terlalu jauh
+                        ke JavaScript.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="note warning">
+
+                <b>Ingat:</b>
+
+                Tidak perlu menghafalkan semua tag dan properti CSS.
+                Yang penting adalah memahami konsep dan tahu cara
+                mencari referensi ketika lupa.
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer style="
+            border-top: 1px solid #e5e7eb;
+            padding-top: 25px;
+            color: #6b7280;
+            font-size: 14px;
+        ">
+
+            <p>
+                © 2026 WebLearn — Panduan Dasar HTML & CSS
+            </p>
+
+            <p>
+                Dibuat untuk belajar pemrograman web.
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    function toggleMenu() {
+
+        const sidebar = document.getElementById("sidebar");
+
+        sidebar.classList.toggle("show");
+
+    }
+
+
+    // Tutup sidebar setelah memilih menu di HP
+
+    document.querySelectorAll("aside a").forEach(function(link) {
+
+        link.addEventListener("click", function() {
+
+            if (window.innerWidth <= 850) {
+
+                document
+                    .getElementById("sidebar")
+                    .classList.remove("show");
+
+            }
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>
